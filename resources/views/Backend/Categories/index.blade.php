@@ -46,10 +46,10 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://cdn.datatables.net/2.1.8/js/dataTables.js"></script>
     <script src="https://cdn.datatables.net/2.1.8/js/dataTables.bootstrap5.js"></script>
-    {{-- <script src={{ asset('assets/backend/js/helper.js') }}></script> --}}
-    {{-- <script src={{ asset('assets/backend/js/category.js') }}></script> --}}
+    <script src={{ asset('assets/backend/js/helper.js') }}></script> --}}
+    <script src={{ asset('assets/backend/js/category.js') }}></script>
 
-    {{-- <script type="text/javascript" src="{{ asset('vendor/jsvalidation/js/jsvalidation.js') }}"></script> --}}
+     <script type="text/javascript" src="{{ asset('vendor/jsvalidation/js/jsvalidation.js') }}"></script>
 
     {{-- {!! JsValidator::formRequest('App\Http\Requests\CategoryRequest', '#formCategory') !!} --}}
 
@@ -88,37 +88,42 @@
         };
 
         const deleteData = (e) => {
-            let id = e.getAttribute('data-id');
+    let id = e.getAttribute('data-id');
 
-            Swal.fire({
-                title: "Are you sure?",
-                text: "Do you want to delete this category?",
-                icon: "question",
-                confirmButtonColor: "#d33",
-                cancelButtonColor: "#3085d6",
-                confirmButtonText: "Delete",
-                cancelButtonText: "Cancel",
-                allowOutsideClick: false,
-                showCancelButton: true,
-                showCloseButton: true
-            }).then((result) => {
-                if (result.value) {
-                    $.ajax({
-                        headers: {
-                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                        },
-                        type: "DELETE",
-                        url: "/admin/categories/" + id,
-                        dataType: "json",
-                        success: function(response) {
-                            alert('ok')
-                        },
-                        error: function(response) {
-                            console.log(response);
-                        }
-                    });
+    Swal.fire({
+        title: "Are you sure?",
+        text: "Do you want to delete this category?",
+        icon: "question",
+        confirmButtonColor: "#d33",
+        cancelButtonColor: "#3085d6",
+        confirmButtonText: "Delete",
+        cancelButtonText: "Cancel",
+        allowOutsideClick: false,
+        showCancelButton: true,
+        showCloseButton: true
+    }).then((result) => {
+        startLoading();
+
+        if (result.value) {
+            $.ajax({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                type: "DELETE",
+                url: "/admin/categories/" + id,
+                dataType: "json",
+                success: function (response) {
+                    reloadTable();
+
+                    toastSuccess(response.message);
+                },
+                error: function (response) {
+                    console.log(response);
                 }
-            })
+            });
         }
+    })
+}
+
     </script>
 @endpush

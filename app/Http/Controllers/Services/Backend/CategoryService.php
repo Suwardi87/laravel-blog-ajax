@@ -52,4 +52,9 @@ class CategoryService
             ->make();
         }
     }
+
+    public function getFirstBy(string $column, string $value)
+    {
+        return Category::where($column, $value)->firstOrFail();
+    }
 }

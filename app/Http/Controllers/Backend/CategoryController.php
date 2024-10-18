@@ -64,9 +64,14 @@ class CategoryController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(string $uuid): JsonResponse
     {
-        //
+        
+        $getData = $this->categoryService->getFirstBy('uuid', $uuid);
+
+        $getData->delete();
+
+        return response()->json(['message' => 'Data Kategori Berhasil Dihapus!']);
     }
 
     public function serverside(Request $request): JsonResponse
