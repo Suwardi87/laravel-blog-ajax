@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Contracts\View\View;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Services\Backend\CategoryService;
+use App\Http\Requests\CategoryRequest;
 use Illuminate\Http\JsonResponse;
 
 class CategoryController extends Controller
@@ -16,49 +17,54 @@ class CategoryController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index():View
+    Public function index(): View
     {
         return view('backend.categories.index');
     }
 
     /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(CategoryRequest $request)
     {
-        //
+        $data = $request->validated();
+
+        try {
+
+            $this->categoryService->create($data);
+
+            return response()->json(['message' => 'Data Kategori Berhasil Ditambah!']);
+        } catch (\Exception $err) {
+            return response()->json(['message' => $err->getMessage()], 500);
+        }
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(string $uuid)
     {
-        //
+        try {
+            $data = $this->categoryService->getFirstBy('uuid', $uuid);
+
+            return response()->json(['data' => $data]);
+        } catch (\Exception $err) {
+            return response()->json(['message' => $err->getMessage()], 404);
+        }
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
+       public function update(CategoryRequest $request, string $uuid)
     {
-        //
-    }
+        $data = $request->validated();
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
+        try {
+            $this->categoryService->update($data, $uuid);
+
+            return response()->json(['message' => 'Data Kategori Berhasil Diubah!']);
+        } catch (\Exception $err) {
+            return response()->json(['message' => $err->getMessage()], 500);
+        }
+
     }
 
     /**
@@ -66,12 +72,15 @@ class CategoryController extends Controller
      */
     public function destroy(string $uuid): JsonResponse
     {
-        
-        $getData = $this->categoryService->getFirstBy('uuid', $uuid);
+        try {
+            $getData = $this->categoryService->getFirstBy('uuid', $uuid);
 
-        $getData->delete();
+            $getData->delete();
 
-        return response()->json(['message' => 'Data Kategori Berhasil Dihapus!']);
+            return response()->json(['message' => 'Data Kategori Berhasil Dihapus!']);
+        } catch (\Exception $err) {
+            return response()->json(['message' => $err->getMessage()], 404);
+        }
     }
 
     public function serverside(Request $request): JsonResponse
@@ -79,3 +88,4 @@ class CategoryController extends Controller
         return $this->categoryService->dataTable($request);
     }
 }
+

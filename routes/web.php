@@ -13,7 +13,7 @@ Route::prefix('admin')->group(function () {
         return view('home');
     })->name('admin.dashboard');
 
-    Route::get('categories.serverside', [CategoryController::class, 'serverside'])->name('admin.categories.serverside');
+    Route::get('categories/serverside', [CategoryController::class, 'serverside'])->name('admin.categories.serverside');
 
     Route::resource('categories', CategoryController::class)
     // ->except('edit','create')
