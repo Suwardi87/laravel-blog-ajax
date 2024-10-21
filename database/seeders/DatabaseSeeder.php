@@ -20,7 +20,7 @@ class DatabaseSeeder extends Seeder
             'password' => bcrypt('password'),
         ]);
 
-        Category::factory(50000)->create();
+        // Category::factory(50000)->create();
     }
 
 }

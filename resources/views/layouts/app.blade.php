@@ -36,17 +36,17 @@
                     <!-- Left Side Of Navbar -->
                     @auth
                     <ul class="navbar-nav  me-auto">
-                        <li class="nav-item">
-                            <a class="nav-link {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}" href="{{ route('admin.dashboard') }}">Dashboard</a>
+                        <li class="nav-item btn btn-sm btn-light">
+                            <a class="nav-link" href="{{ route('login') }}"><i class="fa fa-chart-bar"></i> Dashboard</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="">Articels</a>
+                        <li class="nav-item btn btn-sm btn-light {{ request()->is('admin/articles*') ? 'active' : '' }}">
+                            <a class="nav-link" href="{{ route('admin.articles.index') }}"><i class="fa fa-file-alt"></i> Article</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link btn-sm btn-light {{ request()->routeIs('admin.categories.index') ? 'active' : '' }}" href="{{ route('admin.categories.index') }}">Categories</a>
+                        <li class="nav-item btn btn-light {{ request()->routeIs('admin.categories*') ? 'active' : '' }}">
+                            <a class="nav-link btn-sm  " href="{{ route('admin.categories.index') }}">Categories</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="">Tags</a>
+                        <li class="nav-item btn btn-light {{ request()->routeIs('admin.tags*') ? 'active' : '' }}">
+                            <a class="nav-link" href="{{ route('admin.tags.index') }}">Tags</a>
                         </li>
                     </ul>
                     @endauth
