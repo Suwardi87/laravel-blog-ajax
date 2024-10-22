@@ -45,6 +45,21 @@ const modalCategory = () => {
     $('.btnSubmit').html('<i class="fa fa-save"></i> Save');
 }
 
+const modalImportCategory = () => {
+    submit_method = 'create';
+
+    resetForm('#formCategory');  // Mengatur ulang form jika diperlukan
+    resetValidation();  // Fungsi validasi ulang jika Anda memilikinya
+    
+    // Pastikan ID modal yang benar digunakan
+    $('#modalImportCategory').modal('show');
+
+    // Mengubah judul modal dan teks tombol
+    $('.modal-title').html('<i class="fa fa-plus"></i> Import Category');
+    $('.btnSubmit').html('<i class="fa fa-save"></i> Save');
+}
+
+
 // form edit
 const editData = (e) => {
     let id = e.getAttribute('data-id');

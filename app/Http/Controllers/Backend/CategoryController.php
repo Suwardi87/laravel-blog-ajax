@@ -3,17 +3,21 @@
 namespace App\Http\Controllers\Backend;
 
 use Illuminate\Http\Request;
+use App\Imports\CategoryImport;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Contracts\View\View;
 use App\Http\Controllers\Controller;
-use App\Http\Controllers\Services\Backend\CategoryService;
+use Maatwebsite\Excel\Facades\Excel;
 use App\Http\Requests\CategoryRequest;
-use Illuminate\Http\JsonResponse;
+use App\Http\Controllers\Services\Backend\CategoryService;
 
 class CategoryController extends Controller
 {
     public function __construct(
         private CategoryService $categoryService,
-    ){}
+    ){
+        $this->middleware('owner');
+    }
     /**
      * Display a listing of the resource.
      */
@@ -65,6 +69,22 @@ class CategoryController extends Controller
             return response()->json(['message' => $err->getMessage()], 500);
         }
 
+    }
+
+    public function import(Request $request)
+    {
+        try {
+            $request->validate([
+                'file_import' => 'required|mimes:csv,xls,xlsx'
+            ]);
+
+            // import class
+            Excel::import(new CategoryImport, $request->file('file_import'));
+
+            return redirect()->back()->with('success', 'Import Data Kategori Berhasil!');
+        } catch (\Exception $th) {
+            return redirect()->back()->with('error', $th->getMessage());
+        }
     }
 
     /**

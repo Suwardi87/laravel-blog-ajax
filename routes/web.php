@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Backend\TagController;
 use App\Http\Controllers\Backend\ArticleController;
 use App\Http\Controllers\Backend\CategoryController;
+use App\Http\Controllers\Backend\WriterController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -21,6 +22,8 @@ Route::prefix('admin')->middleware('auth')->group(function () {
     ->names('admin.articles');
 
     //Category
+    Route::post('categories/import', [CategoryController::class, 'import'])->name('admin.categories.import');
+
     Route::get('categories/serverside', [CategoryController::class, 'serverside'])->name('admin.categories.serverside');
     Route::resource('categories', CategoryController::class)
     ->except('edit','create')
@@ -31,6 +34,12 @@ Route::prefix('admin')->middleware('auth')->group(function () {
     Route::resource('tags', TagController::class)
     ->except('edit','create')
     ->names('admin.tags');
+
+     // writers
+     Route::get('writers/serverside', [WriterController::class, 'serverside'])->name('admin.writers.serverside');
+     Route::resource('writers', WriterController::class)
+     ->only('index')
+     ->names('admin.writers');
 });
 
 Auth::routes();
