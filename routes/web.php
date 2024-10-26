@@ -3,13 +3,17 @@
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Backend\TagController;
+use App\Http\Controllers\Backend\WriterController;
 use App\Http\Controllers\Backend\ArticleController;
 use App\Http\Controllers\Backend\CategoryController;
-use App\Http\Controllers\Backend\WriterController;
+use App\Http\Controllers\Frontend\HomeController;
+use App\Http\Controllers\Frontend\ArticleController as FrontendArticleController;
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', [HomeController::class, 'index'])->name('frontend.home');
+
+Route::resource('article', FrontendArticleController::class)
+->only('show', 'index')
+->names('articles');
 
 Route::prefix('admin')->group(function () {
     Route::get('dashboard', function () {
