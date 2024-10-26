@@ -14,11 +14,10 @@ class WriterMiddleware
      * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
      */
     public function handle(Request $request, Closure $next): Response
-    {
-        // check yang login penulis dan harus verified
-        if ($request->user()->hasRole('writer') && !auth()->user()->is_verified) {
-            return response()->view('backend.writers.unverified', ['owner_email' => 'ilhamlutfi@gmail.com'], 403);
-        }
-        return $next($request);
+{
+    if ($request->user()->hasRole('writer') && auth()->user()->is_verified) {
+        return response()->view('backend.writers.unverified', ['APP_EMAIL' => config('owner.email')], 403);
     }
+    return $next($request);
+}
 }

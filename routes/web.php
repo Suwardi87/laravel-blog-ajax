@@ -11,36 +11,39 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::prefix('admin')->middleware('auth')->group(function () {
+Route::prefix('admin')->group(function () {
     Route::get('dashboard', function () {
         return view('home');
-    })->name('admin.dashboard');
+    });
 
-    // Articels
+    // articles
     Route::get('articles/serverside', [ArticleController::class, 'serverside'])->name('admin.articles.serverside');
+    Route::get('restore/{uuid}', [ArticleController::class, 'restore'])->name('admin.articles.restore');
+    Route::delete('articles/force-delete/{uuid}', [ArticleController::class, 'forceDelete']);
     Route::resource('articles', ArticleController::class)
-    ->names('admin.articles');
+        ->names('admin.articles');
 
-    //Category
-    Route::post('categories/import', [CategoryController::class, 'import'])->name('admin.categories.import');
-
+    // categories
     Route::get('categories/serverside', [CategoryController::class, 'serverside'])->name('admin.categories.serverside');
+    Route::post('categories/import', [CategoryController::class, 'import'])->name('admin.categories.import');
     Route::resource('categories', CategoryController::class)
-    ->except('edit','create')
-    ->names('admin.categories');
+        ->except('create', 'edit')
+        ->names('admin.categories');
 
-    //Tag
+    // tags
     Route::get('tags/serverside', [TagController::class, 'serverside'])->name('admin.tags.serverside');
     Route::resource('tags', TagController::class)
-    ->except('edit','create')
-    ->names('admin.tags');
+        ->except('create', 'edit')
+        ->names('admin.tags');
 
-     // writers
-     Route::get('writers/serverside', [WriterController::class, 'serverside'])->name('admin.writers.serverside');
-     Route::resource('writers', WriterController::class)
-     ->only('index')
-     ->names('admin.writers');
+    // writers
+    Route::get('writers/serverside', [WriterController::class, 'serverside'])->name('admin.writers.serverside');
+    Route::resource('writers', WriterController::class)
+        ->only('index')
+        ->names('admin.writers');
 });
+
+
 
 Auth::routes();
 

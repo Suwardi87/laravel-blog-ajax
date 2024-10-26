@@ -24,6 +24,7 @@ return new class extends Migration
             $table->string('image');
             $table->string('keywords');
             $table->string('views');
+            $table->softDeletes();
             $table->timestamps();
         });
     }

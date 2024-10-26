@@ -17,7 +17,7 @@ class OwnerMiddleware
     {
         // check yang login harus/jika bukan owner
         if (!$request->user()->hasRole('owner')) {
-           abort(403);
+            return response()->view('backend.writers.unverified', ['APP_EMAIL' => config('owner.email')], 403);
         }
         return $next($request);
     }

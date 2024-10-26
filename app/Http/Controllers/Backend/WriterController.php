@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Contracts\View\View;
 use App\Http\Controllers\Controller;
-use App\Http\Services\Backend\WriterService;
+use App\Http\Controllers\Services\Backend\WriterService;
 
 class WriterController extends Controller
 {

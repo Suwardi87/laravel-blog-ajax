@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Contracts\View\View;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Gate;
 use App\Http\Requests\ArticleRequest;
 use App\Http\Controllers\Services\Backend\ImageService;
 use App\Http\Controllers\Services\Backend\ArticleService;
@@ -66,8 +67,12 @@ class ArticleController extends Controller
      */
     public function show(string $uuid)
     {
+        $article = $this->articleService->getFirstBy('uuid', $uuid, true);
+
+        // Gate::authorize('view', $article);
+
         return view('backend.articles.show', [
-            'article' => $this->articleService->getFirstBy('uuid', $uuid, true),
+            'article' => $article,
         ]);
     }
 
@@ -76,8 +81,12 @@ class ArticleController extends Controller
      */
     public function edit(string $uuid)
     {
+        $article = $this->articleService->getFirstBy('uuid', $uuid, true);
+
+        Gate::authorize('view', $article);
+
         return view('backend.articles.edit', [
-            'article' => $this->articleService->getFirstBy('uuid', $uuid, true),
+            'article' => $article,
             'categories' => $this->articleService->getCategory(),
             'tags' => $this->articleService->getTag()
         ]);
@@ -116,9 +125,37 @@ class ArticleController extends Controller
      */
     public function destroy(string $uuid)
     {
+        $article = $this->articleService->getFirstBy('uuid', $uuid, true);
+
+        // Gate::authorize('view', $article);
+
         $this->articleService->delete($uuid);
 
         return response()->json(['message' => 'Data Artikel Berhasil Dihapus...']);
+    }
+
+    public function forceDelete(string $uuid)
+    {
+        $article = $this->articleService->getFirstBy('uuid', $uuid, true);
+
+        Gate::authorize('view', $article);
+
+        $this->articleService->forceDelete($uuid);
+
+        return response()->json([
+            'message' => 'Data Artikel Berhasil Dihapus Permanen...',
+        ]);
+    }
+
+    public function restore(string $uuid)
+    {
+        $article = $this->articleService->getFirstBy('uuid', $uuid, true);
+
+        Gate::authorize('view', $article);
+
+        $this->articleService->restore($uuid);
+
+        return redirect()->back()->with('success', 'Data Artikel Berhasil Dipulihkan...');
     }
 
     public function serverside(Request $request): JsonResponse

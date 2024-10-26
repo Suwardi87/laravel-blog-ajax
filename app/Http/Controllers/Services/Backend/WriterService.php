@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Services\Backend;
+namespace App\Http\Controllers\Services\Backend;
 
 use App\Models\User;
 use Illuminate\Support\Str;
