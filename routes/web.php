@@ -8,12 +8,23 @@ use App\Http\Controllers\Backend\ArticleController;
 use App\Http\Controllers\Backend\CategoryController;
 use App\Http\Controllers\Frontend\HomeController;
 use App\Http\Controllers\Frontend\ArticleController as FrontendArticleController;
+use App\Http\Controllers\Frontend\CategoryController as FrontendCategoryController;
+use App\Http\Controllers\Frontend\TagController as FrontendTagController;
 
 Route::get('/', [HomeController::class, 'index'])->name('frontend.home');
 
 Route::resource('article', FrontendArticleController::class)
 ->only('show', 'index')
-->names('articles');
+->names('frontend.articles');
+
+Route::resource('category', FrontendCategoryController::class)
+->only('index', 'show')
+->names('frontend.category');
+
+// Route::resource('tag', FrontendTagController::class)
+// ->only('index', 'show')
+// ->names('frontend.tag');
+Route::get('tag/{slug}', [FrontendTagController::class, 'showByTag'])->name('frontend.tag');
 
 Route::prefix('admin')->group(function () {
     Route::get('dashboard', function () {

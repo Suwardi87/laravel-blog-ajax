@@ -6,7 +6,7 @@
             <div class="col-lg-7 col-xl-8 mt-0">
                 {{-- main post --}}
                 <div class="position-relative overflow-hidden rounded">
-                    <a href="{{ route('articles.show', $main_post->slug) }}">
+                    <a href="{{ route('frontend.articles.show', $main_post->slug) }}">
                         <img src="{{ asset('storage/images/' . $main_post->image) }}"
                             class="img-fluid rounded img-zoomin w-100" alt="{{ $main_post->title }}">
                     </a>
@@ -22,7 +22,7 @@
                 </div>
 
                 <div class="border-bottom py-3">
-                    <a href="{{ route('articles.show', $main_post->slug) }}" class="display-4 text-dark mb-0 link-hover">
+                    <a href="{{ route('frontend.articles.show', $main_post->slug) }}" class="display-4 text-dark mb-0 link-hover">
                         {{ $main_post->title }}
                     </a>
                 </div>
@@ -39,13 +39,15 @@
                     <div class="row g-4 align-items-center">
                         <div class="col-md-6">
                             <div class="rounded overflow-hidden">
-                                <img src="{{ asset('storage/images/' . $top_view->image) }}"
-                                    class="img-fluid rounded img-zoomin w-100" alt="{{ $top_view->title }}">
+                                <a href="{{ route('frontend.articles.show', $top_view->slug) }}">
+                                    <img src="{{ asset('storage/images/' . $top_view->image) }}"
+                                        class="img-fluid rounded img-zoomin w-100" alt="{{ $top_view->title }}">
+                                </a>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="d-flex flex-column">
-                                <a href="#" class="h3">{{ $top_view->title }}</a>
+                                <a href="{{ route('frontend.articles.show', $top_view->slug) }}" class="h3">{{ $top_view->title }}</a>
                                 <p class="mb-0 fs-5"><i class="fa fa-eye"> {{ $top_view->views }} Views</i></p>
                                 <p class="mb-0 fs-5"><i class="fa fa-folder"> {{ $top_view->category->name }}</i></p>
                                 <p class="mb-0 fs-5">
@@ -61,6 +63,7 @@
                 </div>
 
             </div>
+
 
             {{-- main post all --}}
             <div class="col-lg-5 col-xl-4">
@@ -90,7 +93,7 @@
                                     </div>
                                     <div class="col-7">
                                         <div class="features-content d-flex flex-column">
-                                            <a href="{{ route('articles.show', $item->slug) }}" class="h6">{{ $item->title }}</a>
+                                            <a href="{{ route('frontend.articles.show', $item->slug) }}" class="h6">{{ $item->title }}</a>
                                             <small><i class="fa fa-folder"> {{ $item->category->name }}</i> </small>
                                             <small><i class="fa fa-eye"> {{ $item->views }} Views</i></small>
                                         </div>

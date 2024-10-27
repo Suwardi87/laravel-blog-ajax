@@ -48,9 +48,9 @@
                 </button>
                 <div class="collapse navbar-collapse bg-light py-3" id="navbarCollapse">
                     <div class="navbar-nav mx-auto border-top">
-                        <a href="{{ route('frontend.home') }}" class="nav-item nav-link active">Home</a>
-                        <a href="detail-page.html" class="nav-item nav-link">Articles</a>
-                        
+                        <a href="{{ route('frontend.home') }}" class="nav-item nav-link {{ request()->routeIs('frontend.home') ? 'active' : '' }}">Home</a>
+                        <a href="{{ route('frontend.articles.index') }}" class="nav-item nav-link {{ request()->routeIs('frontend.articles.index') ? 'active' : '' }}">Articles</a>
+
                         <div class="nav-item dropdown">
                             <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Categories</a>
                             <div class="dropdown-menu m-0 bg-secondary rounded-0">

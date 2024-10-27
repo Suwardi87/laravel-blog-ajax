@@ -144,6 +144,18 @@ class ArticleService
         }
     }
 
+    public function all()
+    {
+        $article = Article::with('category:id,name,slug', 'user:id,name')
+        ->select(['id', 'title', 'slug', 'category_id', 'user_id', 'published', 'is_confirm', 'views', 'image', 'published_at'])
+        ->orderBy('published_at', 'desc')
+        ->where('published', true)
+        ->where('is_confirm', true)
+        ->SimplePaginate(6);
+
+        return $article;
+    }
+
     public function create(array $data)
     {
         $data['slug'] = Str::slug($data['title']);

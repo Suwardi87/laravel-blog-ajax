@@ -69,6 +69,16 @@ class CategoryService
         return Category::where($column, $value)->firstOrFail();
     }
 
+     // get all category
+     public function all()
+     {
+         return Category::whereHas('articles', function ($query) {
+             $query->where('published', true)
+                 ->where('is_confirm', true);
+         })->withCount('articles as total_articles')->latest()->get(['id', 'name', 'slug']);
+     }
+
+
     public function create(array $data)
     {
         $data['slug'] = Str::slug($data['name']);
