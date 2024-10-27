@@ -12,7 +12,7 @@
                     </div>
                     <div class="overflow-hidden" style="width: 735px;">
                         <div id="note" class="ps-2">
-                            <a href="#">
+                            <a href="{{ route('frontend.articles.show', $top_view->slug ?? '') }}">
                                 <p class="text-white mb-0 link-hover">
                                     {{ $top_view->title ?? '' }}
                                 </p>
@@ -39,7 +39,7 @@
     <div class="container-fluid bg-light">
         <div class="container px-0">
             <nav class="navbar navbar-light navbar-expand-xl">
-                <a href="index.html" class="navbar-brand mt-3">
+                <a href="{{ route('frontend.home') }}" class="navbar-brand mt-3">
                     <p class="text-primary display-6 mb-2" style="line-height: 0;">MSIB</p>
                     <small class="text-body fw-normal" style="letter-spacing: 12px;">Laravel Blog</small>
                 </a>
@@ -49,19 +49,26 @@
                 <div class="collapse navbar-collapse bg-light py-3" id="navbarCollapse">
                     <div class="navbar-nav mx-auto border-top">
                         <a href="{{ route('frontend.home') }}" class="nav-item nav-link {{ request()->routeIs('frontend.home') ? 'active' : '' }}">Home</a>
+
                         <a href="{{ route('frontend.articles.index') }}" class="nav-item nav-link {{ request()->routeIs('frontend.articles.index') ? 'active' : '' }}">Articles</a>
 
                         <div class="nav-item dropdown">
-                            <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Categories</a>
+                            <a href="#" class="nav-link {{ request()->routeIs('frontend.category.*') ? 'active' : '' }} dropdown-toggle" data-bs-toggle="dropdown">Categories</a>
                             <div class="dropdown-menu m-0 bg-secondary rounded-0">
-                                <a href="#" class="dropdown-item">Sports</a>
-                                <a href="#" class="dropdown-item">Megazine</a>
-                                <a href="#" class="dropdown-item">Politics</a>
-                                <a href="#" class="dropdown-item">Technology</a>
+                                @forelse ($categories as $category)
+                                    <a href="{{ route('frontend.category.show', $category->slug) }}" class="dropdown-item {{ request()->routeIs('frontend.category.show', $category->slug) ? 'active' : '' }}">{{ $category->name }}</a>
+                                @empty
+
+                                @endforelse
+                                <a href="{{ route('frontend.category.index') }}" class="dropdown-item {{ request()->routeIs('frontend.category.index') ? 'active' : '' }}">All frontend.Category</a>
+                                {{-- <a href="{{ route('frontend.category.show', 'laravel') }}" class="dropdown-item">Laravel</a>
+                                <a href="{{ route('frontend.category.show', 'express-js') }}" class="dropdown-item">Express Js</a>
+                                <a href="{{ route('frontend.category.show', 'adonis-js') }}" class="dropdown-item">Adonis Js</a>
+                                <a href="{{ route('frontend.category.index') }}" class="dropdown-item">All frontend.Category</a> --}}
                             </div>
                         </div>
 
-                        <a href="contact.html" class="nav-item nav-link">Contact Us</a>
+                        <a href="" class="nav-item nav-link">Contact Us</a>
                     </div>
 
                     <div class="d-flex flex-nowrap border-top pt-3 pt-xl-0">

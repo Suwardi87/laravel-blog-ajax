@@ -2,7 +2,7 @@
 
 @section('title', 'Articles')
 
-{{-- @push('meta')
+@push('meta')
     <meta name="robots" content="index, follow">
     <meta name="author" content="Ilham Lutfi | ilhamlutfi.github.io">
     <meta name="keyword" content="Articles MyBlog, Blog Technology">
@@ -11,7 +11,7 @@
     <meta property="og:title" content="MyBlog">
     <meta property="og:image" content="contoh.jpg">
     <meta name="image" content="contoh.jpg">
-@endpush --}}
+@endpush
 
 @push('css')
 @endpush

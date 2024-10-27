@@ -49,7 +49,7 @@
                                                 class="img-zoomin img-fluid rounded w-100" alt="{{ $articles->title }}">
                                         </div>
                                         <span
-                                            class="rounded-circle  border-2 border-white bg-primary btn-sm-square text-white position-absolute"
+                                            class="rounded-circle border border-2 border-white bg-primary btn-sm-square text-white position-absolute"
                                             style="top: 10%; right: -10px;">{{ $articles->views }}</span>
                                     </div>
                                 </div>
@@ -73,13 +73,13 @@
                             <h4 class="mb-0">Tags</h4>
                         </div>
                         <ul class="nav nav-pills d-inline-flex text-center mb-4">
-                            {{-- @foreach ($tags as $tag)
+                            @foreach ($tags as $tag)
                             <li class="nav-item mb-3">
                                 <a class="d-flex py-2 bg-light rounded-pill me-2" href="{{ route('frontend.tag.show', $tag->slug) }}">
                                     <span class="text-dark link-hover" style="width: 90px;">#{{ $tag->name }}</span>
                                 </a>
                             </li>
-                            @endforeach --}}
+                            @endforeach
                         </ul>
                     </div>
                     <div class="col-lg-12">

@@ -64,7 +64,6 @@
 
             </div>
 
-
             {{-- main post all --}}
             <div class="col-lg-5 col-xl-4">
                 <div class="bg-light rounded p-4 pt-0">
@@ -87,8 +86,10 @@
                                 <div class="row g-4 align-items-center">
                                     <div class="col-5">
                                         <div class="overflow-hidden rounded">
-                                            <img src="{{ asset('storage/images/' . $item->image) }}"
-                                                class="img-zoomin img-fluid rounded w-100" alt="{{ $item->title }}">
+                                            <a href="{{ route('frontend.articles.show', $item->slug) }}">
+                                                <img src="{{ asset('storage/images/' . $item->image) }}"
+                                                    class="img-zoomin img-fluid rounded w-100" alt="{{ $item->title }}">
+                                            </a>
                                         </div>
                                     </div>
                                     <div class="col-7">

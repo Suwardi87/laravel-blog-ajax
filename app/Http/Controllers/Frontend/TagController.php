@@ -2,41 +2,30 @@
 
 namespace App\Http\Controllers\Frontend;
 
-use App\Models\Tag;
+use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Services\Frontend\TagService;
 use App\Http\Controllers\Services\Frontend\ArticleService;
+use App\Http\Controllers\Services\Frontend\CategoryService;
 
 class TagController extends Controller
 {
     public function __construct(
         private TagService $tagService,
+        private CategoryService $categoryService,
         private ArticleService $articleService
     ){}
 
-    public function show(string $slug)
+    public function index()
     {
-        // eloquent
-        $tag = Tag::where('slug', $slug)->first();
-        if (!$tag) {
-            return view('frontend.custom-error.404', [
-                'url' => url('/tag/' . $slug),
-            ]);
-        }
+        $articles = $this->articleService->all();
 
-        // // add view
-        $tag->increment('views');
-
-         // get category
-        //  $categories = $this->tagService->randomCategory();
-
-         return view('frontend.tag.show', [
-             'tag' => $tag,
-            //  'categories' => $categories,
-            //  'popular_tags' => $this->tagService->populartags(),
-             'tags' => $this->tagService->all(),
-            //  'related_tags' => $this->tagService->relatedtags($article->slug),
-         ]);
+        return view('frontend.article.index', [
+            'articles' => $articles,
+            'categories' => $this->categoryService->all(),
+            'popular_articles' => $this->articleService->popularArticles(),
+            'tags' => $this->tagService->all(),
+        ]);
     }
 
     public function showByTag(string $slug)
@@ -56,4 +45,26 @@ class TagController extends Controller
             'articles' => $articles,
         ]);
     }
+
+    public function show(string $slug)
+    {
+        $tag = $this->tagService->getFirstBy('slug', $slug);
+
+        if ($tag == null) {
+            return view('frontend.custom-error.404', [
+                'url' => url('/tag/' . $slug),
+            ]);
+        }
+
+        $articles = $this->articleService->showByTag($slug);
+
+        return view('frontend.tag.show', [
+            'tag' => $tag,
+            'articles' => $articles,
+            'popular_articles' => $this->articleService->popularArticles(),
+            'tags' => $this->tagService->all(),
+            'categories' => $this->categoryService->all(),
+        ]);
+    }
+
 }

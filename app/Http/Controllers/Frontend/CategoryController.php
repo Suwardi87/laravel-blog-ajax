@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Frontend;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\Services\Frontend\TagService;
 use App\Http\Controllers\Services\Frontend\ArticleService;
 use App\Http\Controllers\Services\Frontend\CategoryService;
 
@@ -11,15 +12,16 @@ class CategoryController extends Controller
 {
     public function __construct(
         private CategoryService $categoryService,
-        private ArticleService $articleService)
+        private ArticleService $articleService,
+        private TagService $tagService)
     {}
 
     public function index()
     {
-        $categories = $this->categoryService->all();
-
-        return view('frontend.category.index', [
-            'categories' => $categories,
+     return view('frontend.category.index', [
+            'categories' => $this->categoryService->all(),
+            'popular_articles' => $this->articleService->popularArticles(),
+            'tags' => $this->tagService->all(),
         ]);
     }
 
@@ -37,6 +39,9 @@ class CategoryController extends Controller
 
         return view('frontend.category.show', [
             'category' => $category,
+            'popular_articles' => $this->articleService->popularArticles(),
+            'tags' => $this->tagService->all(),
+            'categories' => $this->categoryService->all(),
             'articles' => $articles,
         ]);
     }

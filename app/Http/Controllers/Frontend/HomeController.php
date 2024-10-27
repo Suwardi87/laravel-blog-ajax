@@ -4,9 +4,17 @@ namespace App\Http\Controllers\FrontEnd;
 
 use App\Models\Article;
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\Services\Frontend\TagService;
+use App\Http\Controllers\Services\Frontend\ArticleService;
+use App\Http\Controllers\Services\Frontend\CategoryService;
 
 class HomeController extends Controller
 {
+    public function __construct(
+        private ArticleService $articleService,
+        private CategoryService $categoryService,
+        private TagService $tagService
+    ) {}
     public function index()
     {
         // artikel terbaru
@@ -35,7 +43,11 @@ class HomeController extends Controller
         return view('frontend.home.index', [
             'main_post' => $main_post,
             'top_view' => $top_view,
-            'main_post_all' => $main_post_all
+            'main_post_all' => $main_post_all,
+            'articles' => $this->articleService->all(),
+            'categories' => $this->categoryService->all(),
+            'popular_articles' => $this->articleService->popularArticles(),
+            'tags' => $this->tagService->all()
         ]);
     }
 }

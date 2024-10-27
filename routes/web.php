@@ -21,10 +21,10 @@ Route::resource('category', FrontendCategoryController::class)
 ->only('index', 'show')
 ->names('frontend.category');
 
-// Route::resource('tag', FrontendTagController::class)
-// ->only('index', 'show')
-// ->names('frontend.tag');
-Route::get('tag/{slug}', [FrontendTagController::class, 'showByTag'])->name('frontend.tag');
+Route::resource('tag', FrontendTagController::class)
+->only('index', 'show')
+->names('frontend.tag');
+// Route::get('tag/{slug}', [FrontendTagController::class, 'showByTag'])->name('frontend.tag');
 
 Route::prefix('admin')->group(function () {
     Route::get('dashboard', function () {
