@@ -90,7 +90,7 @@
                             <div id="tab-1" class="tab-pane fade show active">
                                 <div class="row g-4 align-items-center">
                                     <div class="col-3">
-                                        <img src="https://mubatekno.com/ilham-min.webp" class="img-fluid w-100 rounded"
+                                        <img src="https://lh3.googleusercontent.com/a/ACg8ocKCUgYdfKYbMuwJ3JZDdFRW8U7EhvH0NwEN9ho1zE7Yqg9PbCr-=s432-c-no" class="img-fluid w-100 rounded"
                                             alt="">
                                     </div>
                                     <div class="col-9">

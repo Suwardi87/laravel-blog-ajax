@@ -73,13 +73,22 @@ class ArticleService
                         <span class="badge bg-secondary">' . $data->category->name . '</span>
                     </div>';
                 })
+                // Pada bagian editColumn
                 ->editColumn('published', function ($data) {
-                    if ($data->published == 1) {
-                        return '<span class="badge bg-success">Published</span>';
+                    if ($data->published == 0) {
+                        // return '<button type="button" class="btn btn-sm btn-danger" onclick="StatusArticle(this)" data-id="' . $data->uuid . '">Draft</button>';
+                        return '<a href="' . route('admin.status',$data->uuid) . '"   class="btn btn-sm btn-danger">Draft</a>';
                     } else {
-                        return '<span class="badge bg-danger">Draft</span>';
+                        return '<span class="badge bg-success">Published</span>';
                     }
                 })
+                // ->editColumn('published', function ($data) {
+                //     if ($data->published == 1) {
+                //         return '<span class="badge bg-success">Published</span>';
+                //     } else {
+                //         return '<span class="badge bg-danger">Draft</span>';
+                //     }
+                // })
                 ->editColumn('views', function ($data) {
                     return '<span class="badge bg-secondary">' . $data->views . 'x</span>';
                 })
@@ -123,6 +132,7 @@ class ArticleService
         }
     }
 
+
     public function getCategory()
     {
         return Category::latest()->get(['id', 'name']);
@@ -147,11 +157,11 @@ class ArticleService
     public function all()
     {
         $article = Article::with('category:id,name,slug', 'user:id,name')
-        ->select(['id', 'title', 'slug', 'category_id', 'user_id', 'published', 'is_confirm', 'views', 'image', 'published_at'])
-        ->orderBy('published_at', 'desc')
-        ->where('published', true)
-        ->where('is_confirm', true)
-        ->SimplePaginate(6);
+            ->select(['id', 'title', 'slug', 'category_id', 'user_id', 'published', 'is_confirm', 'views', 'image', 'published_at'])
+            ->orderBy('published_at', 'desc')
+            ->where('published', true)
+            ->where('is_confirm', true)
+            ->SimplePaginate(6);
 
         return $article;
     }

@@ -46,6 +46,7 @@ function articleTable() {
     });
 };
 
+
 const deleteData = (e) => {
     let id = e.getAttribute('data-id');
 
@@ -83,6 +84,45 @@ const deleteData = (e) => {
         }
     })
 }
+
+// Event submit form menggunakan AJAX
+$('#formUpdateArticle').on('submit', function (e) {
+    e.preventDefault();
+    startLoading();
+
+    let id = $('#id').val();
+    let publishedStatus = $('#published').val();
+
+    $.ajax({
+        type: "POST",
+        url: "/admin/articles/" + id + "/update-status",
+        data: {
+            _method: "PUT", // Simpan metode HTTP PUT jika diperlukan
+            _token: '{{ csrf_token() }}',
+            published: publishedStatus
+        },
+        success: function (response) {
+            stopLoading();
+            $('#formStatusArticle').modal('hide'); // Tutup modal setelah submit
+
+            Swal.fire({
+                icon: 'success',
+                title: "Success!",
+                text: response.message,
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    location.reload(); // Reload halaman untuk melihat perubahan status
+                }
+            });
+        },
+        error: function (jqXHR) {
+            console.log(jqXHR.responseText);
+            toastError(jqXHR.responseText);
+            stopLoading();
+        }
+    });
+});
+
 
 const deleteForceData = (e) => {
     let id = e.getAttribute('data-id');

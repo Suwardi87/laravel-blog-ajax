@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Backend;
 
+use App\Models\Article;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Contracts\View\View;
@@ -26,6 +27,25 @@ class ArticleController extends Controller
     {
         return view('backend.articles.index');
     }
+
+    public function status($uuid): View
+{
+    $article = Article::findOrFail($uuid); // Menggunakan findOrFail untuk menangani kesalahan
+    return view('backend.articles.edit-status', compact('article'));
+}
+
+public function updateStatus(Request $request, $uuid)
+{
+    $request->validate([
+        'published' => 'required|boolean', // Validasi yang sesuai
+    ]);
+
+    $article = Article::findOrFail($uuid);
+    $article->published = $request->published;
+    $article->save();
+
+    return response()->json(['message' => 'Article status updated successfully.']);
+}
 
     /**
      * Show the form for creating a new resource.
@@ -119,6 +139,7 @@ class ArticleController extends Controller
             ]);
         }
     }
+
 
     /**
      * Remove the specified resource from storage.

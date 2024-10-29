@@ -88,4 +88,16 @@ class ArticleService
 
         return $articles;
     }
+
+    public function latest(){
+        $articles = Article::with('category:id,name','user:id,name')
+        ->select('id', 'category_id', 'title', 'slug','user_id', 'published', 'is_confirm', 'views', 'image', 'published_at')
+        ->orderBy('published_at', 'desc')
+        ->where('published', true)
+            ->where('is_confirm', true)
+            ->limit(4)
+            ->get();
+
+    return $articles;
+    }
 }

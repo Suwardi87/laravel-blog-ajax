@@ -47,12 +47,19 @@ const reloadTable = () => {
     $('#yajra').DataTable().draw(false);
 }
 
-const resetForm = (form) => {
-    $(form)[0].reset();
-}
 
 const resetValidation = () => {
     $('.is-invalid').removeClass('is-invalid');
     $('.is-valid').removeClass('is-valid');
     $('span.invalid-feedback').remove();
 }
+
+// Fungsi untuk mereset form
+const resetForm = (selector) => {
+    const form = $(selector)[0];
+    if (form && form.tagName === 'FORM') { // Pastikan elemen adalah form
+        form.reset(); // Reset form jika form benar ditemukan
+    } else {
+        console.error("resetForm: Element is not a form.");
+    }
+};

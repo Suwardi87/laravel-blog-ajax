@@ -38,7 +38,7 @@
         </div>
     </div>
 
-    @include('backend.tags._modal')
+    @include('backend.tag._modal')
 @endsection
 
 @push('js')

@@ -21,13 +21,8 @@ class ArticleController extends Controller
 
     public function index()
     {
-        $articles = $this->articleService->all();
-
         return view('frontend.article.index', [
-            'articles' => $articles,
-            'categories' => $this->categoryService->all(),
-            'popular_articles' => $this->articleService->popularArticles(),
-            'tags' => $this->tagService->all(),
+            'articles' => $this->articleService->all(),
         ]);
     }
 
@@ -51,9 +46,6 @@ class ArticleController extends Controller
         return view('frontend.article.show', [
             'article' => $article,
             'related_articles' => $this->articleService->relatedArticles($article->slug),
-            'categories' => $this->categoryService->all(),
-            'popular_articles' => $this->articleService->popularArticles(),
-            'tags' => $this->tagService->all(),
         ]);
     }
 }

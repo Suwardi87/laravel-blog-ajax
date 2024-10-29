@@ -3,15 +3,17 @@
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Backend\TagController;
+use App\Http\Controllers\Frontend\HomeController;
 use App\Http\Controllers\Backend\WriterController;
 use App\Http\Controllers\Backend\ArticleController;
 use App\Http\Controllers\Backend\CategoryController;
-use App\Http\Controllers\Frontend\HomeController;
+use App\Http\Controllers\Frontend\SitemapController;
+use App\Http\Controllers\Frontend\TagController as FrontendTagController;
 use App\Http\Controllers\Frontend\ArticleController as FrontendArticleController;
 use App\Http\Controllers\Frontend\CategoryController as FrontendCategoryController;
-use App\Http\Controllers\Frontend\TagController as FrontendTagController;
 
 Route::get('/', [HomeController::class, 'index'])->name('frontend.home');
+Route::get('sitemap.xml', [SitemapController::class, 'index'])->name('sitemap');
 
 Route::resource('article', FrontendArticleController::class)
 ->only('show', 'index')
@@ -24,7 +26,6 @@ Route::resource('category', FrontendCategoryController::class)
 Route::resource('tag', FrontendTagController::class)
 ->only('index', 'show')
 ->names('frontend.tag');
-// Route::get('tag/{slug}', [FrontendTagController::class, 'showByTag'])->name('frontend.tag');
 
 Route::prefix('admin')->group(function () {
     Route::get('dashboard', function () {
@@ -33,6 +34,8 @@ Route::prefix('admin')->group(function () {
 
     // articles
     Route::get('articles/serverside', [ArticleController::class, 'serverside'])->name('admin.articles.serverside');
+    Route::get('articles/status/{uuid}', [ArticleController::class, 'status'])->name('admin.status');
+    Route::post('admin/articles/{id}/update-status', [ArticleController::class, 'updateStatus']);
     Route::get('restore/{uuid}', [ArticleController::class, 'restore'])->name('admin.articles.restore');
     Route::delete('articles/force-delete/{uuid}', [ArticleController::class, 'forceDelete']);
     Route::resource('articles', ArticleController::class)

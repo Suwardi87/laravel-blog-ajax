@@ -40,14 +40,23 @@ class HomeController extends Controller
             ->where('id', '!=', $main_post->id)
             ->limit(6) // membatasi hanya 6
             ->get();
+
+        $latestArticles = Article::with('category:id,name','user:id,name')
+        ->select('id', 'category_id', 'title', 'slug','user_id', 'published', 'is_confirm', 'views', 'image', 'published_at')
+        ->orderBy('published_at', 'desc')
+        ->where('published', true)
+            ->where('is_confirm', true)
+            ->limit(4)
+            ->get();
+
+        $categories = $this->categoryService->randomCategory();
+
         return view('frontend.home.index', [
             'main_post' => $main_post,
             'top_view' => $top_view,
             'main_post_all' => $main_post_all,
-            'articles' => $this->articleService->all(),
-            'categories' => $this->categoryService->all(),
-            'popular_articles' => $this->articleService->popularArticles(),
-            'tags' => $this->tagService->all()
+            'latestArticles' => $latestArticles,
+            'categories' => $categories
         ]);
     }
 }

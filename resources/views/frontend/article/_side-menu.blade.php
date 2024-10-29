@@ -49,7 +49,7 @@
                                                 class="img-zoomin img-fluid rounded w-100" alt="{{ $articles->title }}">
                                         </div>
                                         <span
-                                            class="rounded-circle border border-2 border-white bg-primary btn-sm-square text-white position-absolute"
+                                            class="rounded-circle  border-2 border-white bg-primary btn-sm-square text-white position-absolute"
                                             style="top: 10%; right: -10px;">{{ $articles->views }}</span>
                                     </div>
                                 </div>

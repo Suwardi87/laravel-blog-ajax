@@ -4,7 +4,7 @@
 
 @push('meta')
     <meta name="robots" content="index, follow">
-    <meta name="author" content="Ilham Lutfi | ilhamlutfi.github.io">
+    <meta name="author" content="Suwardi | suwardi.github.io">
     <meta name="keyword" content="MyBlog, Blog Technology">
     <meta name="description" content="MyBlog is a blog that shares knowledge about technology, programming, and web development.">
     <meta property="og:title" content="MyBlog">
@@ -26,7 +26,7 @@
 @include('frontend.home.section._main-post')
 
 {{-- banner start --}}
-@include('frontend.home.section._banner-start')
+{{-- @include('frontend.home.section._banner-start') --}}
 
 {{-- banner start --}}
 @include('frontend.home.section._latest-news')

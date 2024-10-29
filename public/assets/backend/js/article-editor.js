@@ -18,6 +18,7 @@ $(document).ready(function () {
 });
 
 
+
 // store data
 $('#formArticle').on('submit', function (e) {
     e.preventDefault();
@@ -109,8 +110,11 @@ $('#formUpdateArticle').on('submit', function (e) {
     });
 })
 
-//  tampil gambar yang dipilih
 
+
+
+
+//  tampil gambar yang dipilih
 $('#image').on('change', function () {
     const gambar = document.querySelector('#image');
     const imgPreview = document.querySelector('.img-preview');

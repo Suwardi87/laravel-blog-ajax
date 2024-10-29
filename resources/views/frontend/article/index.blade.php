@@ -80,6 +80,46 @@
                     </div>
                 </div>
 
+
+                    {{-- <div class="col-lg-4">
+                        <div class="card">
+                            <div class="card-body">
+                                <h4 class="mb-4">Terbaru</h4>
+                                <ul class="list-unstyled">
+                                    @forelse ($latest_articles as $latest_article)
+                                        <li class="mb-2">
+                                            <a href="{{ route('frontend.articles.show', $latest_article->slug) }}"
+                                                class="link-hover text-body">
+                                                {{ $latest_article->title }}
+                                            </a>
+                                        </li>
+                                    @empty
+                                        <li>Tidak ada artikel terbaru</li>
+                                    @endforelse
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                        <div class="col-lg-4">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h4 class="mb-4">Kategori</h4>
+                                    <ul class="list-unstyled">
+                                        @forelse ($category_articles as $category)
+                                            <li class="mb-2">
+                                                <a href="{{ route('frontend.category.show', $category->slug) }}"
+                                                    class="link-hover text-body">
+                                                    {{ $category->name }}
+                                                </a>
+                                            </li>
+                                        @empty
+                                            <li>Tidak ada kategori</li>
+                                        @endforelse
+                                    </ul>
+                                </div>
+                            </div> --}}
+
+                {{-- @include('frontend.article._latest-news') --}}
                 @include('frontend.article._side-menu')
             </div>
         </div>
