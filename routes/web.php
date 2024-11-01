@@ -35,7 +35,10 @@ Route::prefix('admin')->group(function () {
     // articles
     Route::get('articles/serverside', [ArticleController::class, 'serverside'])->name('admin.articles.serverside');
     Route::get('articles/status/{uuid}', [ArticleController::class, 'status'])->name('admin.status');
-    Route::post('admin/articles/{id}/update-status', [ArticleController::class, 'updateStatus']);
+    Route::put('articles/{uuid}/update-published', [ArticleController::class, 'updatePublished'])->name('admin.articles.updatePublished');
+
+    Route::put('articles/{uuid}/update-confirm', [ArticleController::class, 'updateConfirm'])->name('admin.articles.updateConfirm');
+
     Route::get('restore/{uuid}', [ArticleController::class, 'restore'])->name('admin.articles.restore');
     Route::delete('articles/force-delete/{uuid}', [ArticleController::class, 'forceDelete']);
     Route::resource('articles', ArticleController::class)

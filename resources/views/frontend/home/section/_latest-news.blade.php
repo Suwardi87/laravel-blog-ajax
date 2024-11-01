@@ -1,7 +1,7 @@
 <!-- Latest News Start -->
 <div class="container-fluid latest-news py-5">
     <div class="container py-5">
-        <h2 class="mb-4">Latest News</h2>
+        <h2 class="mb-4"> Article Terbaru</h2>
         <div class="latest-news-carousel owl-carousel">
             @foreach ($latestArticles as $article)
             <div class="latest-news-item">

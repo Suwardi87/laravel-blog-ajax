@@ -8,121 +8,103 @@ use App\Models\Category;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
 use Yajra\DataTables\Facades\DataTables;
+use Illuminate\Support\Facades\Mail;
 
 class ArticleService
 {
     public function dataTable($request)
     {
         if ($request->ajax()) {
-            $totalData = Article::count();
-            $totalFiltered = $totalData;
-
+            $user = auth()->user();
             $limit = $request->length;
             $start = $request->start;
-
-            if (empty($request->search['value'])) {
-                if (auth()->user()->hasRole('owner')) {
-                    $data = Article::latest()
-                        ->with('category:id,name', 'tags:id,name')
-                        ->offset($start)
-                        ->limit($limit)
-                        ->withTrashed()
-                        ->get(['id', 'uuid', 'title', 'category_id', 'views', 'published', 'deleted_at']);
-                } else {
-                    $data = Article::latest()
-                        ->with('category:id,name', 'tags:id,name')
-                        ->offset($start)
-                        ->limit($limit)
-                        ->where('user_id', auth()->user()->id)
-                        ->get(['id', 'uuid', 'title', 'category_id', 'views', 'published', 'deleted_at']);
+    
+            // Determine the query based on user role
+            $query = Article::with('category:id,name', 'tags:id,name')->withTrashed();
+    
+            if ($user->hasRole('owner')) {
+                $totalData = $query->count();
+                $data = $query->latest()->offset($start)->limit($limit);
+    
+                // Filter if search value is present
+                if (!empty($request->search['value'])) {
+                    $data = $data->filter($request->search['value']);
                 }
             } else {
-                if (auth()->user()->hasRole('owner')) {
-                    $data = Article::filter($request->search['value'])
-                        ->latest()
-                        ->with('category:id,name', 'tags:id,name')
-                        ->offset($start)
-                        ->limit($limit)
-                        ->withTrashed()
-                        ->get(['id', 'uuid', 'title', 'category_id', 'views', 'published', 'deleted_at']);
-                } else {
-                    $data = Article::filter($request->search['value'])
-                        ->latest()
-                        ->with('category:id,name', 'tags:id,name')
-                        ->offset($start)
-                        ->limit($limit)
-                        ->where('user_id', auth()->user()->id)
-                        ->get(['id', 'uuid', 'title', 'category_id', 'views', 'published', 'deleted_at']);
+                $totalData = Article::where('user_id', $user->id)->count();
+                $data = $query->where('user_id', $user->id)->latest()->offset($start)->limit($limit);
+    
+                // Filter if search value is present
+                if (!empty($request->search['value'])) {
+                    $data = $data->filter($request->search['value']);
                 }
-
-                $totalFiltered = $data->count();
             }
-
+    
+            // Get the filtered data
+            $data = $data->get(['id', 'uuid', 'title', 'category_id', 'views', 'published','is_confirm', 'deleted_at']);
+    
+            // Calculate totalFiltered for non-empty search
+            $totalFiltered = empty($request->search['value']) ? $totalData : $data->count();
+    
             return DataTables::of($data)
                 ->addIndexColumn()
                 ->setOffset($start)
                 ->editColumn('title', function ($data) {
-                    if (auth()->user()->hasRole('owner') && $data->deleted_at != null) {
-                        return '<span class="text-danger">' . $data->title . '</span>';
-                    } else {
-                        return $data->title;
-                    }
+                    return $data->deleted_at 
+                        ? '<span class="text-danger">' . $data->title . '</span>' 
+                        : $data->title;
                 })
                 ->editColumn('category_id', function ($data) {
-                    return '<div>
-                        <span class="badge bg-secondary">' . $data->category->name . '</span>
-                    </div>';
+                    return '<span class="badge bg-secondary">' . $data->category->name . '</span>';
                 })
-                // Pada bagian editColumn
-                ->editColumn('published', function ($data) {
-                    if ($data->published == 0) {
-                        // return '<button type="button" class="btn btn-sm btn-danger" onclick="StatusArticle(this)" data-id="' . $data->uuid . '">Draft</button>';
-                        return '<a href="' . route('admin.status',$data->uuid) . '"   class="btn btn-sm btn-danger">Draft</a>';
-                    } else {
-                        return '<span class="badge bg-success">Published</span>';
+                ->editColumn('published', function ($data) use ($user) {
+                    if ($user->hasRole('owner')) {
+                        return $data->published == 0 
+                            ? '<button type="button" class="btn btn-sm btn-danger" onclick="publishedModal(this)" data-uuid="' . $data->uuid . '">Draft</button>' 
+                            : '<span class="badge bg-success">Published</span>';
                     }
+                    return $data->published == 0 
+                        ? '<span class="badge bg-danger">Draft</span>' 
+                        : '<span class="badge bg-success">Published</span>';
                 })
-                // ->editColumn('published', function ($data) {
-                //     if ($data->published == 1) {
-                //         return '<span class="badge bg-success">Published</span>';
-                //     } else {
-                //         return '<span class="badge bg-danger">Draft</span>';
-                //     }
-                // })
+                ->editColumn('is_confirm', function ($data) use ($user) {
+                    if ($user->hasRole('owner')) {
+                        return $data->is_confirm == 0 
+                            ? '<button type="button" class="btn btn-sm btn-danger" onclick="confirmModal(this)" data-uuid="' . $data->uuid . '">Belum</button>' 
+                            : '<span class="badge bg-success">Confirm</span>';
+                    }
+                    return $data->is_confirm == 0 
+                        ? '<span class="badge bg-danger">Belum</span>' 
+                        : '<span class="badge bg-success">Confirm</span>';
+                })
+                
+                
                 ->editColumn('views', function ($data) {
                     return '<span class="badge bg-secondary">' . $data->views . 'x</span>';
                 })
                 ->addColumn('tag_id', function ($data) {
-                    $tagsHtml = '';
-
-                    foreach ($data->tags as $tag) {
-                        $tagsHtml .= '<span class="badge bg-secondary ms-1">' . $tag->name . '</span>';
-                    }
-
-                    return $tagsHtml;
+                    return $data->tags->map(function ($tag) {
+                        return '<span class="badge bg-secondary ms-1">' . $tag->name . '</span>';
+                    })->implode('');
                 })
                 ->addColumn('action', function ($data) {
-                    $actionBtn = '
-                    <div class="text-center" width="10%">
-                        <div class="btn-group">
-                            <a href="' . route('admin.articles.show', $data->uuid) . '"  class="btn btn-sm btn-secondary">
-                                <i class="fas fa-eye"></i>
-                            </a>
-
-                            <a href="' . route('admin.articles.edit', $data->uuid) . '"  class="btn btn-sm btn-success">
-                                <i class="fas fa-edit"></i>
-                            </a>
-
-                            <button type="button" class="btn btn-sm btn-danger" onclick="deleteData(this)" data-id="' . $data->uuid . '">
-                                <i class="fas fa-trash-alt"></i>
-                            </button>
+                    return '
+                        <div class="text-center">
+                            <div class="btn-group">
+                                <a href="' . route('admin.articles.show', $data->uuid) . '" class="btn btn-sm btn-secondary">
+                                    <i class="fas fa-eye"></i>
+                                </a>
+                                <a href="' . route('admin.articles.edit', $data->uuid) . '" class="btn btn-sm btn-success">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                                <button type="button" class="btn btn-sm btn-danger" onclick="deleteData(this)" data-id="' . $data->uuid . '">
+                                    <i class="fas fa-trash-alt"></i>
+                                </button>
+                            </div>
                         </div>
-                    </div>
-                ';
-
-                    return $actionBtn;
+                    ';
                 })
-                ->rawColumns(['title', 'category_id', 'tag_id', 'published', 'views', 'action'])
+                ->rawColumns(['title', 'category_id', 'tag_id', 'published', 'is_confirm', 'views', 'action'])
                 ->with([
                     'recordsTotal' => $totalData,
                     'recordsFiltered' => $totalFiltered,
@@ -170,13 +152,16 @@ class ArticleService
     {
         $data['slug'] = Str::slug($data['title']);
 
-        if ($data['published'] == 1) {
+        if (array_key_exists('published', $data) && $data['published'] == 1) {
             $data['published_at'] = date('Y-m-d');
+        }else{
+            $data['published_at'] = null;
         }
 
+           
         // insert article_tag
         $article = Article::create($data);
-        $article->tags()->sync($data['tag_id']);
+        $article->tags()->sync($data['tag_id'] ?? []);
 
         return $article;
     }

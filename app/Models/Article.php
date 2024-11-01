@@ -23,7 +23,7 @@ class Article extends Model
         'published',
         'published_at',
         'image',
-        'keywords',
+        'keywords'
     ];
 
     public static function booted()

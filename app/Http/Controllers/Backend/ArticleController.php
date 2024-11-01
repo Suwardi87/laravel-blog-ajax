@@ -3,12 +3,15 @@
 namespace App\Http\Controllers\Backend;
 
 use App\Models\Article;
+use App\Mail\StatusMail;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Contracts\View\View;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Mail;
 use App\Http\Requests\ArticleRequest;
+use Illuminate\Support\Facades\Session;
 use App\Http\Controllers\Services\Backend\ImageService;
 use App\Http\Controllers\Services\Backend\ArticleService;
 
@@ -25,27 +28,75 @@ class ArticleController extends Controller
      */
     public function index(): View
     {
+
         return view('backend.articles.index');
     }
 
-    public function status($uuid): View
+    public function updatePublished(Request $request, $uuid)
 {
-    $article = Article::findOrFail($uuid); // Menggunakan findOrFail untuk menangani kesalahan
-    return view('backend.articles.edit-status', compact('article'));
-}
+    // Redirect to the articles index page if the user has the 'owner' role
+    if (Session::get('role') === 'owner') {
+        return redirect()->route('admin.articles.index');
+    }
 
-public function updateStatus(Request $request, $uuid)
-{
-    $request->validate([
-        'published' => 'required|boolean', // Validasi yang sesuai
+    // Validate the input status
+    $data = $request->validate([
+        'published' => ['required', 'in:0,1'],
     ]);
 
-    $article = Article::findOrFail($uuid);
-    $article->published = $request->published;
-    $article->save();
+    try {
+        // Find the article by UUID and update its status
+        $article = Article::where('uuid', $uuid)->firstOrFail();
+        $article->published = $data['published'];
+        $article->save();
 
-    return response()->json(['message' => 'Article status updated successfully.']);
+        // Return a JSON response for AJAX
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Article publish updated successfully'
+        ]);
+    } catch (\Exception $error) {
+        // Return a JSON error response
+        return response()->json([
+            'status' => 'error',
+            'message' => $error->getMessage()
+        ], 500);
+    }
 }
+
+
+    public function updateConfirm(Request $request, $uuid)
+    {
+        // Redirect to the articles index page if the user has the 'owner' role
+        if (Session::get('role') === 'owner') {
+            return redirect()->route('admin.articles.index');
+        }
+
+        // Validate the input status
+        $data = $request->validate([
+            'is_confirm' => 'required',
+        ]);
+
+        try {
+            // Find the article by UUID and update its status
+            $article = Article::where('uuid', $uuid)->firstOrFail();
+            $article->is_confirm = $data['is_confirm'];
+            $article->save();
+
+            // Return a JSON response for AJAX
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Article confirm updated successfully'
+            ]);
+        } catch (\Exception $error) {
+            // Return a JSON error response
+            return response()->json([
+                'status' => 'error',
+                'message' => $error->getMessage()
+            ], 500);
+        }
+    }
+
 
     /**
      * Show the form for creating a new resource.
@@ -58,9 +109,6 @@ public function updateStatus(Request $request, $uuid)
         ]);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(ArticleRequest $request): JsonResponse
     {
         $data = $request->validated();
@@ -68,7 +116,7 @@ public function updateStatus(Request $request, $uuid)
         try {
             $data['image'] = $this->imageService->storeImage($data);
 
-            $this->articleService->create($data);
+            $article = $this->articleService->create($data);
 
             return response()->json([
                 'message' => 'Data Artikel Berhasil Ditambahkan...'
@@ -81,6 +129,8 @@ public function updateStatus(Request $request, $uuid)
             ]);
         }
     }
+
+    
 
     /**
      * Display the specified resource.
@@ -122,9 +172,9 @@ public function updateStatus(Request $request, $uuid)
         $getArticle = $this->articleService->getFirstBy('uuid', $uuid);
 
         try {
-           if ($request->hasFile('image')) {
+            if ($request->hasFile('image')) {
                 $data['image'] = $this->imageService->storeImage($data, $getArticle->image);
-           }
+            }
 
             $this->articleService->update($data, $uuid);
 

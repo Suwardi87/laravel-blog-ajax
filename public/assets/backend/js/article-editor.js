@@ -25,9 +25,8 @@ $('#formArticle').on('submit', function (e) {
 
     startLoading();
 
-    let url, method;
-    url = '/admin/articles';
-    method = 'POST';
+    let url = '/admin/articles';
+    let method = 'POST';
 
     const inputForm = new FormData(this);
 
@@ -57,14 +56,14 @@ $('#formArticle').on('submit', function (e) {
                 if (result.isConfirmed) {
                     window.location.href = '/admin/articles';
                 }
-            })
+            });
         },
         error: function (jqXHR, response) {
             console.log(response.message);
             toastError(jqXHR.responseText);
         }
     });
-})
+});
 
 // update data
 $('#formUpdateArticle').on('submit', function (e) {

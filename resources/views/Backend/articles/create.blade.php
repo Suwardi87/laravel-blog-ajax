@@ -21,19 +21,28 @@
                                     <input type="text" name="title" id="title" class="form-control">
                                 </div>
                             </div>
-
-                            <div class="col-md-6">
+                            @if (Auth::user()->role == 'owner')    
+                            <div class="col-md-6 ">
                                 <div class="mb-3">
                                     <label for="published">Status</label>
                                     <select name="published" id="published" class="form-select">
                                         <option value="" hidden>-- choose --</option>
                                         <option value="1">Published</option>
-                                        <option value="0">Draft</option>
+                                        <option value="0" selected>Draft</option> <!-- Set "Draft" as selected -->
                                     </select>
                                 </div>
                             </div>
-                        </div>
-
+                        @else
+                            <div class="col-md-6 d-none">
+                                <div class="mb-3">
+                                    <label for="published">Status</label>
+                                    <select name="published" id="published" class="form-select" disabled>
+                                        <option value="0" selected>Draft</option>
+                                    </select>
+                                </div>
+                            </div>
+                        @endif
+                        
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="mb-3">

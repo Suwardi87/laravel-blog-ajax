@@ -27,7 +27,6 @@ class ArticleRequest extends FormRequest
             'title' => 'required|string|min:3|max:255|unique:articles,title,' . $routeId . ',uuid',
             "slug" => "nullable",
             "content" => "required",
-            "published" => "required|in:0,1",
             "category_id" => "required|exists:categories,id",
             "tag_id" => "required|array",
             "tag_id.*" => "required|exists:tags,id",

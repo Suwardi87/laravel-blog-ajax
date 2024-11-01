@@ -24,6 +24,7 @@
                                 <th>Tag</th>
                                 <th>Views</th>
                                 <th>Status</th>
+                                <th>Is Confirm</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -38,7 +39,8 @@
     </div>
 </div>
 
-{{-- @include('Backend.articles._modal-status') --}}
+@include('Backend.articles._published')
+@include('Backend.articles._confirm')
 @endsection
 
 @push('js')

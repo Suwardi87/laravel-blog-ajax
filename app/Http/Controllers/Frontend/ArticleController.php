@@ -2,14 +2,14 @@
 
 namespace App\Http\Controllers\Frontend;
 
-use App\Models\Tag;
 use App\Models\Article;
-use App\Models\Category;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Mail;
 use App\Http\Controllers\Services\Frontend\TagService;
 use App\Http\Controllers\Services\Frontend\ArticleService;
 use App\Http\Controllers\Services\Frontend\CategoryService;
+use App\Mail\StatusMail;
 
 class ArticleController extends Controller
 {
@@ -48,4 +48,6 @@ class ArticleController extends Controller
             'related_articles' => $this->articleService->relatedArticles($article->slug),
         ]);
     }
+
+
 }
